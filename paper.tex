@@ -1,0 +1,233 @@
+\documentclass[11pt]{article}
+\usepackage{acl2016}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+
+%\aclfinalcopy % Uncomment this line for the final submission
+\input{bit-aclfinalcopy}
+%\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+\usepackage[noinline,nomargin,noindex,draft]{fixme}
+\fxsetup{theme=color,mode=multiuser}
+\FXRegisterAuthor{n}{note}{NOTE} 
+%\nnote[inline]{this is how to make regular notes...}
+%\nerror[margin]{} or \fxerror[inline]{reserved for final paper}
+
+\newcommand\BibTeX{B{\sc ib}\TeX}
+
+\title{Instructions for ACL-2016 Proceedings}
+
+\author{Egon W.~Stemle \\
+  EURAC \\
+  Bozen-Bolzano, Italy \\
+  {\tt egon.stemle@eurac.edu}} % \\\And
+  %Jennifer-Carmen Frey \\
+  %EURAC \\
+  %Bozen-Bolzano, Italy \\
+  %{\tt jennifercarmen.frey@eurac.edu} \\}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    This article describes the system that participated in the Part-of-speech
+    tagging subtask of the \emph{EmpiriST 2015 shared task on automatic
+    linguistic annotation of computer-mediated communication / social
+    media}.
+
+    The system combines a small assertion of trending techniques -- that
+    implement matured methods -- from natural language processing to achieve
+    competitive results on POS tagging of German CMC and web corpus data; 
+    in particular, the system uses word embeddings and character-level representations of word beginnings and endings in a LSTM recurrent neural
+    network architecture.
+
+    %fixme: \fxerror[inline]{}write something about the results.
+    
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Part-of-speech tagging (and tokenization) is an essential processing stage for virtually all NLP applications. However, for German there has been relatively little work in this area so far. To this end, the EmpiriST shared task (ST) focuses on tokenization and part-of-speech tagging~\cite{empirist2016}.
+
+% Is POS tagging a solved task\cite{Giesbrecht2009}.
+Recently, State-of-the-art results on various linguistic tasks were accomplished by architectures using neural-network based word embeddings; Baroni~\shortcite{baroni-dinu-kruszewski:2014:P14-1} conducted a set of experiments comparing the popular \texttt{word2vec}~\cite{DBLP:journals/corr/abs-1301-3781,arXiv:1310.4546} implementation for creating word embeddings to other recent distributional methods with state-of-the-art results across various (semantic) tasks.
+Even though these results suggest that the word embeddings substantially outperform the recent architectures on semantic similarity and analogy detection tasks Levy~\shortcite{TACL570} conducted a comprehensive set of experiments and comparisons that suggest that much of the improved results are due to the system design and parameter optimizations, rather than the selected method;
+they conclude that "there does not seem to be a consistent significant advantage to one approach over the other".
+
+We take these results to use \texttt{word2vec} word embeddings in our architecture because they are (1) often faster to learn, and (2) for educational purposes, i.e.~we wanted to get some experience in using them.
+
+
+\section{Design}
+\label{sec:design}
+Our overall design takes inspiration from as far back as Benello~\shortcite{Benello1989} who used a few preceding and one following word in a feed-forward network with back-propagation for PoS tagging; they achieved an accuracy of $0.95$ on the Brown Corpus.
+
+Further inspiration comes from dos Santos~\shortcite{santos2014learning} who used a deep neural network trained with character-level joint with word embedding representation of words for PoS tagging. On the Wall Street Journal (WSJ) portion of the Penn Treebank they achieve accuracy scores of $0.9732$. 
+
+Our design comprises character-level 3-grams of word beginnings and ends joint with word embedding representation of words in a long short-term memory (LSTM) recurrent neural network (RNN) architecture~\cite{Hochreiter:1997:LSM:1246443.1246450} for learning a mapping of sequences of these representations to PoS tags.
+
+\section{Implementation}
+\label{sec:implementation}
+
+We maintain the implementation in a source code repository at \url{https://github.com/iiegn/bot_zen}. 
+The version tagged as {\tt 0.9} comprises the version that was used to generate the results submitted to the ST; 
+the version tagged as {\tt 1.0} is identical at its core but comes with explicit documentation on how to download and install external software, and how to download and pre-process required corpora.
+
+%\subsection{Word Embeddings}
+For learning word embeddings we use \texttt{word2vec}; for building our neural netowrk we use Keras, a minimalist, highly modular neural networks library, written in Python and capable of running on top of either TensorFlow or Theano~\cite{chollet2015}; in our case it runs on top of Theano, a Python library that allows to define, optimize, and evaluate mathematical expressions involving multi-dimensional arrays efficiently~\cite{TheTheanoDevelopmentTeam2016}.
+
+The input to our network consists of the concatenation of the word embeddings and the one-hot n-gram representations of the word sequences with the length of the sequence being the whole sentence; this input is feed into a LSTM layer that in turn projects into a fully connected output layer with softmax activation function. 
+
+\section{Case Studies}
+\label{sec:casestudies}
+
+The implementation from Section~\ref{sec:implementation} was used to participate in the EmpiriST 2015 shared task (see Subsection~\ref{ssec:case_empirist}), and subsequently, to run experiments with different data and parameters for training (see Subsection~\ref{ssec:case_postempirist}).
+
+\emph{empirist}%
+\footnote{\url{https://sites.google.com/site/empirist2015/home/shared-task-data}}
+is the cmc and web training data containing data samples from different CMC genres and samples from text genres on the web.
+The data were tagged by two annotators, and unclear cases were decided by a third person. See Bei{\ss}wenger~\shortcite{empirist2016} for more details.
+
+\emph{Tiger v2.2}%
+\footnote{\url{http://www.ims.uni-stuttgart.de/forschung/ressourcen/korpora/tiger.html}}
+is version 2.2 of the TIGERCorpus\cite{Brants2004} containing German newspaper texts. 
+The corpus was semi-automatically POS-tagged. For research and evaluation purposes, the TIGERCorpus can be downloaded for free.
+
+\emph{de.wiki'15}%
+\footnote{\url{http://www1.ids-mannheim.de/kl/projekte/korpora/verfuegbarkeit.html#Download}}
+are user talk pages (messages from users to users, often questions and advice) and article talk pages (questions, concerns or comments related to improving a Wikipedia article), and article pages of the German wikipedia from 2015, made available by the \emph{Institut f\"{u}r Deutsche Sprache}\footnote{\url{http://www.ids-mannheim.de}}.
+The user talk pages contain
+% 378,576,711 
+$0.9*10^9$ tokens in
+% 15,343,904
+$15*10^6$ sentences, the article talk pages
+% 446,551,142 
+$0.4*10^9$ tokens in
+%17,275,385 
+$17*10^6$ sentences, and the article pages
+% 1,126,462,560 
+$1.1*10^9$
+tokens in
+% 46,740,611 
+$46*10^6$ sentences.
+% tokens: 378,576,711+446,551,142+1,126,462,560 = 1,951,590,413
+% sentences: 15,343,904+17,275,385+46,740,611 = 79359900
+The data is available under the 
+CC BY-SA 3.0\footnote{Creative Commons Attribution-ShareAlike 3.0 Unported, i.e.~the data can be copied and redistributed, and adapted for any purpose, even commercially. See \url{http://creativecommons.org/licenses/by-sa/3.0/} for more details.} license.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{l|r|r}
+\hline
+\multicolumn{1}{c}{}	& \multicolumn{1}{c}{Tokens}	& \multicolumn{1}{c}{Sentences} \\ \hline
+empirist    			& $10*10^3$	& $0.6*10^3$      \\ \hline
+Tiger v2.2 		& $0.9*10^9$	& $0.05*10^6$	  \\ \hline
+de.wiki'15   		& $2.0*10^9$	& $79*10^6$	  \\ \hline\hline
+C4Corpus            	& $$		& $$	  \\ \hline
+DECOW14           	& $11.7*10^9$	& $600*10^6$	  \\ \hline
+\emph{*unclear*}	& $19.9*10^9$	& $1300*10^6$	  \\ \hline
+\end{tabular}
+\end{center}
+\caption{\label{tab:corpora}Training data used for EmpiriST (upper part) and additional data for the subsequent experiments (lower part).}
+\end{table}
+
+\emph{C4Corpus}%
+\footnote{\url{https://github.com/dkpro/dkpro-c4corpus}}
+is a full documents German web corpus that has been extracted from CommonCrawl, the largest publicly available general Web crawl to date. The data is available under the CreativeCommons license family\footnote{\url{https://creativecommons.org/licenses/}}. 
+See Habernal~\shortcite{Habernal.et.al.2016.LREC} for details about the corpus construction pipeline, and other information about the corpus.
+
+\emph{DECOW14}%
+\footnote{\url{http://corporafromtheweb.org/decow14/}}
+is the sentence shuffled German web corpus by COW created with the 2014 technology of the COW initiative~\cite{SchaeferBildhauer2012}.
+The data can be used for purposes of academic research.
+% $11.7*10^9$ tokens 
+% $0.6*10^9$ (624,767,747) sentences
+
+\emph{*unclear*} web corpus.
+%DeTenTen
+% $19.9*10^9$ (19,918,263,493) tokens
+% $1.3*10^9$ (1,309,696,220) sentences
+
+An overview of the used training data can be found in Table~\ref{tab:corpora}.
+
+For evaluation we used the EmpiriST 2015 trial data: 4000 tokens, PoS tagged by one annotator without systematic error checks, i.e.~the accuracy of the PoS annotations is likely lower than on the training data and on the gold standard.
+
+\subsection{EmpiriST 2015}
+\label{ssec:case_empirist}
+
+For the three submitted  runs of EmpiriST 2015 we used word embeddings from the \emph{empirist} data (run 1), the \emph{de.wiki'15} data (run 2), and both (run 3). 
+We trained a 500-dimensional skip-gram model on the \emph{empirist} data that ignored all words with less than 3 occurrences within a window size of 10; it was trained with negative sampling (value 5) and (accidentally%
+\footnote{Although, technically, the two can be combined they 'work against' each other: hierarchical softmax works better with few training epochs but for negative sampling, few training epochs are suboptimal.}% https://groups.google.com/forum/#!topic/word2vec-toolkit/WUWad9fL0jU
+) also with hierarchical softmax.
+We trained a 500-dimensional continuous bag-of-word model on the \emph{de.wiki'15} data that ignored all words with less than 25 occurrences within a window size of 10; it was trained with negative sampling (value 3) and (accidentally) also with hierarchical softmax.
+
+The rational behind training the two models differently was that according to \texttt{word2vec} author's experience\footnote{\url{https://groups.google.com/d/msg/word2vec-toolkit/NLvYXU99cAM/E5ld8LcDxlAJ}} a skip-gram model "works well with small amount[s] of the training data, [and] represents well even rare words or phrases", and a cbow model is "several times faster to train than the skip-gram, [and has] slightly better accuracy for the frequent words".
+% empirist.bin -cbow 0 -size 500 -window 10 -hs 1 -negative 5 -min-count 3 
+% bigdata.bin -cbow 1 -size 500 -window 10 -hs 1 -negative 3 -min-count 25
+The other parameters of \texttt{word2vec} were left at its default settings.
+
+To optimize the output results of the neural network we ran a simple grid search for the following three parameters: the output dimensions of the hidden LSTM layer, the dropout value for the projections from the LSTM to the output layer during training, and the number of epochs during training. The resulting parameters were $1024$ output dimensions, $0.1$ as the dropout value, and $20$ number of epochs.
+%lstm_output_dims = [128, 256, 512, 1024*]
+%dropouts = [0.1*, 0.25, 0.5, 0.75]
+%nb_epochs = [5, 10, 20*]
+
+For the first run we trained the network on \emph{empirist}, for the second run on \emph{Tiger v2.2}, and for the third on the concatenation of the two. % 
+% 1: empirist_training (tagset:ibk)
+% 2: tiger-2.2 (tagset:1999)
+% 3: empirist_training + tiger-2.2 (tagset:ibk)
+Our evaluation on the EmpiriST trial data resulted in these accuracy scores:
+1:~$0.88$, 
+2:~$0.78$, 
+3:~$0.93$;
+and the evaluation of the organizers of EmpiriST 2015 was:
+1:~$0.84$,
+2:~$0.82$,
+3:~$0.88$.
+
+\subsection{Post-EmpiriST Experiments}
+\label{ssec:case_postempirist}
+As a post-EmpiriST addition to the results we wanted to (1)~remedy some errors and oversights in our initial pre-processing and training, (2)~optimize the learning parameters of the word embedding models and the neural network, and (3)~train word embedding models on other data.
+%fixme: \fxnote[margin]{add (1)}
+
+The optimal learning parameters for the word embedding models were selected according to a comprehensive set of experiments and comparisons by Levy~\shortcite{TACL570}, and observations and suggestions by Mikolov~\shortcite{arXiv:1310.4546}. For the post-EmpiriST experiments we used the skip-gram with negative-sampling training method (SGNS), with a negative-sampling value of $15$ (and without hierarchical softmax, cf.~Subsection~\ref{ssec:case_empirist}), ignored all words with less than $100$ occurrences within a window size of $10$, and a sub-sampling value of $10^{-5}$. 
+% cbow=0, negative=15, hs=0, window=10, sample=10^-5 
+% arXiv:1310.4546: -negative 15 -sample 0.00001
+% TACL570: alpha=0.75 and dyn=1-> fixed in word2vec algorithm;
+% There are quite a few differences between the skip-gram and the CBOW models. However, if you have a lot of training data, their performance should be comparable.\footnote{\url{https://groups.google.com/d/msg/word2vec-toolkit/NLvYXU99cAM/E5ld8LcDxlAJ}}
+
+As additional data to train word embedding models we obtained and processed \emph{C4Corpus}, \emph{DECOW14}, and \emph{*unclear*}.
+
+\fxnote[inline]{}Results pending.
+
+
+\section{Conclusion \& Outlook}
+\label{sec:conclusion}
+
+\fxnote[inline]{}Pending.
+
+%\section*{Acknowledgments}
+%The acknowledgments should go immediately before the references.  Do
+%not number the acknowledgments section. Do not include this section
+%when submitting your paper for review.
+
+\clearpage
+% include your own bib file like this:
+%\bibliographystyle{acl}
+%\bibliography{acl2016}
+%\nocite{*}
+\bibliography{paper}
+\bibliographystyle{acl2016}
+
+%\appendix
+%\section{Supplemental Material}
+%\label{sec:supplemental}
+%Supplement
+
+\end{document}
