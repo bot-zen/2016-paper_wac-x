@@ -129,10 +129,10 @@ CC BY-SA 3.0\footnote{Creative Commons Attribution-ShareAlike 3.0 Unported, i.e.
 \multicolumn{1}{c}{}	& \multicolumn{1}{c}{Tokens}	& \multicolumn{1}{c}{Sentences} \\ \hline
 empirist    			& $10*10^3$	& $0.6*10^3$      \\ \hline
 Tiger v2.2 		& $0.9*10^9$	& $0.05*10^6$	  \\ \hline
-de.wiki'15   		& $2.0*10^9$	& $79*10^6$	  \\ \hline\hline
+de.wiki'15   	& $2.0*10^9$	& $79*10^6$	  \\ \hline\hline
 C4Corpus            	& $$		& $$	  \\ \hline
-DECOW14           	& $11.7*10^9$	& $600*10^6$	  \\ \hline
-\emph{*unclear*}	& $19.9*10^9$	& $1300*10^6$	  \\ \hline
+DECOW14         & $11.7*10^9$	& $600*10^6$	  \\ \hline
+deTenTen	    & $19.9*10^9$	& $1300*10^6$	  \\ \hline
 \end{tabular}
 \end{center}
 \caption{\label{tab:corpora}Training data used for EmpiriST (upper part) and additional data for the subsequent experiments (lower part).}
@@ -150,10 +150,11 @@ The data can be used for purposes of academic research.
 % $11.7*10^9$ tokens 
 % $0.6*10^9$ (624,767,747) sentences
 
-\emph{*unclear*} web corpus.
+\emph{deTenTen} web corpus.
 %DeTenTen
 % $19.9*10^9$ (19,918,263,493) tokens
 % $1.3*10^9$ (1,309,696,220) sentences
+\cite{1120431}
 
 An overview of the used training data can be found in Table~\ref{tab:corpora}.
 
@@ -202,7 +203,7 @@ The optimal learning parameters for the word embedding models were selected acco
 % TACL570: alpha=0.75 and dyn=1-> fixed in word2vec algorithm;
 % There are quite a few differences between the skip-gram and the CBOW models. However, if you have a lot of training data, their performance should be comparable.\footnote{\url{https://groups.google.com/d/msg/word2vec-toolkit/NLvYXU99cAM/E5ld8LcDxlAJ}}
 
-As additional data to train word embedding models we obtained and processed \emph{C4Corpus}, \emph{DECOW14}, and \emph{*unclear*}.
+As additional data to train word embedding models we obtained and processed \emph{C4Corpus}, \emph{DECOW14}, and \emph{deTenTen}.
 
 \fxnote[inline]{}Results pending.
 
