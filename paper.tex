@@ -6,7 +6,7 @@
 
 %\aclfinalcopy % Uncomment this line for the final submission
 \input{bit-aclfinalcopy}
-%\def\aclpaperid{***} %  Enter the acl Paper ID here
+\def\aclpaperid{16} %  Enter the acl Paper ID here
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -21,7 +21,7 @@
 
 \newcommand\BibTeX{B{\sc ib}\TeX}
 
-\title{Instructions for ACL-2016 Proceedings}
+\title{bot.zen @ EmpiriST 2015 - A minimally-deep learning PoS-tagger \\ (trained for German CMC and Web data)}
 
 \author{Egon W.~Stemle \\
   EURAC \\
@@ -42,45 +42,54 @@
     linguistic annotation of computer-mediated communication / social
     media}.
 
-    The system combines a small assertion of trending techniques -- that
-    implement matured methods -- from natural language processing to achieve
-    competitive results on POS tagging of German CMC and web corpus data; in
+    The system combines a small assertion of trending techniques, which
+    implement matured methods, from natural language processing to achieve
+    competitive results on POS tagging of German CMC and Web corpus data; in
     particular, the system uses word embeddings and character-level
     representations of word beginnings and endings in a LSTM recurrent neural
     network architecture.
 
-    %fixme: \fxerror[inline]{}write something about the results.
+    \fxerror[inline]{}write something about the results.
     
 \end{abstract}
 
 \section{Introduction}
 \label{sec:intro}
 
-Part-of-speech tagging (and tokenization) is an essential processing stage for
-virtually all NLP applications. However, for German there has been relatively
-little work in this area so far. To this end, the EmpiriST shared task (ST)
-focuses on tokenization and part-of-speech tagging~\cite{empirist2016}.
+Part-of-speech (POS) tagging is an essential processing stage for virtually all
+NLP applications.
+Subsequent tasks, like for example parsing, named-entity recognition, event
+detection, and machine translation, often utilise POS tags (directly or
+indirectly), and altogether, benefit from accurate tag sequences.
+However, frequent phenomena in computer-mediated communication (CMC) and Web
+corpora such as emoticons, acronyms, interaction words, iteration of letters,
+graphostylistics, shortenings, addressing terms, and non-standard
+spellings~\cite{crystal2001,androutsopoulos2007,beisswenger2013} (gravely)
+deteriorate the performance of POS-taggers~\cite{giesbrecht2009,I13-1041}.
+To this end, the EmpiriST shared task (ST) encouraged the developers of NLP
+applications to adapt their tools and resources for the processing of written
+German CMC and Web data~\cite{empirist2016}.
 
-% Is POS tagging a solved task\cite{Giesbrecht2009}.
 Recently, State-of-the-art results on various linguistic tasks were
 accomplished by architectures using neural-network based word embeddings;
 Baroni~\shortcite{baroni-dinu-kruszewski:2014:P14-1} conducted a set of
 experiments comparing the popular
 \texttt{word2vec}~\cite{DBLP:journals/corr/abs-1301-3781,arXiv:1310.4546}
 implementation for creating word embeddings to other recent distributional
-methods with state-of-the-art results across various (semantic) tasks.  Even
-though these results suggest that the word embeddings substantially outperform
-the recent architectures on semantic similarity and analogy detection tasks
-Levy~\shortcite{TACL570} conducted a comprehensive set of experiments and
-comparisons that suggest that much of the improved results are due to the
-system design and parameter optimizations, rather than the selected method;
-they conclude that "there does not seem to be a consistent significant
+methods with state-of-the-art results across various (semantic) tasks. 
+Even though these results suggest that the word embeddings substantially
+outperform the recent architectures on semantic similarity and analogy
+detection tasks Levy~\shortcite{TACL570} conducted a comprehensive set of
+experiments and comparisons that suggest that much of the improved results are
+due to the system design and parameter optimizations, rather than the selected
+method; they conclude that "there does not seem to be a consistent significant
 advantage to one approach over the other".
 
 We take these results to use \texttt{word2vec} word embeddings in our
 architecture because they are (1) often faster to learn, and (2) for
 educational purposes, i.e.~we wanted to get some experience in using them.
-
+\fixme[margin]{Line 70: "...often faster..." is there some evidence / citation for that?}
+\fixme[margin]{Line 71: "...we wanted to get some experience..." -> nobody cares}
 
 \section{Design}
 \label{sec:design}
@@ -118,7 +127,7 @@ written in Python and capable of running on top of either TensorFlow or
 Theano~\cite{chollet2015}; in our case it runs on top of Theano, a Python
 library that allows to define, optimize, and evaluate mathematical expressions
 involving multi-dimensional arrays
-efficiently~\cite{TheTheanoDevelopmentTeam2016}.
+efficiently~\cite{Theano2016}.
 
 The input to our network consists of the concatenation of the word embeddings
 and the one-hot n-gram representations of the word sequences with the length of
@@ -137,14 +146,14 @@ Subsection~\ref{ssec:case_postempirist}).
 
 \emph{empirist}%
 \footnote{\url{https://sites.google.com/site/empirist2015/home/shared-task-data}}
-is the cmc and web training data containing data samples from different CMC
-genres and samples from text genres on the web.
+is the CMC and Web training data containing data samples from different CMC
+genres and samples from text genres on the Web.
 The data were tagged by two annotators, and unclear cases were decided by a
 third person. See Bei{\ss}wenger~\shortcite{empirist2016} for more details.
 
 \emph{Tiger v2.2}%
 \footnote{\url{http://www.ims.uni-stuttgart.de/forschung/ressourcen/korpora/tiger.html}}
-is version 2.2 of the TIGERCorpus\cite{Brants2004} containing German newspaper
+is version 2.2 of the TIGERCorpus~\cite{Brants2004} containing German newspaper
 texts. 
 The corpus was semi-automatically POS-tagged. For research and evaluation
 purposes, the TIGERCorpus can be downloaded for free.
@@ -196,7 +205,7 @@ additional data for the subsequent experiments (lower part).} \end{table}
 
 \emph{C4Corpus}%
 \footnote{\url{https://github.com/dkpro/dkpro-c4corpus}} is a full documents
-German web corpus that has been extracted from CommonCrawl, the largest
+German Web corpus that has been extracted from CommonCrawl, the largest
 publicly available general Web crawl to date. 
 The data is available under the CreativeCommons license
 family\footnote{\url{https://creativecommons.org/licenses/}}. 
@@ -205,19 +214,22 @@ construction pipeline, and other information about the corpus.
 
 \emph{DECOW14}%
 \footnote{\url{http://corporafromtheweb.org/decow14/}} is the sentence shuffled
-German web corpus by COW created with the 2014 technology of the COW
+German Web corpus by COW created with the 2014 technology of the COW
 initiative~\cite{SchaeferBildhauer2012}.
 The data can be used for purposes of academic research.
 % $11.7*10^9$ tokens 
 % $0.6*10^9$ (624,767,747) sentences
 
-\emph{deTenTen} web corpus.
+\emph{deTenTen} Web corpus.
 %DeTenTen
 % $19.9*10^9$ (19,918,263,493) tokens
 % $1.3*10^9$ (1,309,696,220) sentences
 \cite{1120431}
 
 An overview of the used training data can be found in Table~\ref{tab:corpora}.
+\fixme[margin]{Line 187: as far as I know the trial data is part of the training data. Testing
+on this will naturally yield good, you are training on your evaluation data.
+What is the performance on the provided test set?}
 
 For evaluation we used the EmpiriST 2015 trial data: 4000 tokens, PoS tagged by
 one annotator without systematic error checks, i.e.~the accuracy of the PoS
@@ -235,6 +247,12 @@ it was trained with negative sampling (value 5) and (accidentally%
 each other: hierarchical softmax works better with few training epochs but for
 negative sampling, few training epochs are suboptimal.}% https://groups.google.com/forum/#!topic/word2vec-toolkit/WUWad9fL0jU
 ) also with hierarchical softmax.
+\fixme[margin]{Line 208: you should avoid terms like accidental. Is it even possible to use
+negative sampling and hierarchical softmax? To my understanding these
+approaches are different techniques that cannot be combined easily. By quickly
+doublechecking the word2vec source code I think only HS is used if it is
+activated, negative-sampling will be disregarded in this case. The authors
+should check that thoroughly though.}
 We trained a 500-dimensional continuous bag-of-word model on the
 \emph{de.wiki'15} data that ignored all words with less than 25 occurrences
 within a window size of 10; it was trained with negative sampling (value 3) and
@@ -250,6 +268,8 @@ frequent words".
 % empirist.bin -cbow 0 -size 500 -window 10 -hs 1 -negative 5 -min-count 3 
 % bigdata.bin -cbow 1 -size 500 -window 10 -hs 1 -negative 3 -min-count 25
 The other parameters of \texttt{word2vec} were left at its default settings.
+\fixme[margin]{Line 223: what are the default settings, i.e. they might change over time, it
+is better to explicitly mention them}
 
 To optimize the output results of the neural network we ran a simple grid
 search for the following three parameters: the output dimensions of the hidden
@@ -270,10 +290,11 @@ Our evaluation on the EmpiriST trial data resulted in these accuracy scores:
 1:~$0.88$, 
 2:~$0.78$, 
 3:~$0.93$;
-and the evaluation of the organizers of EmpiriST 2015 was:
+and the overall ST evaluation was:
 1:~$0.84$,
 2:~$0.82$,
 3:~$0.88$.
+\fixme[inline]{more verbose results.}
 
 \subsection{Post-EmpiriST Experiments}
 \label{ssec:case_postempirist}
@@ -281,8 +302,10 @@ As a post-EmpiriST addition to the results we wanted to (1)~remedy some errors
 and oversights in our initial pre-processing and training, (2)~optimize the
 learning parameters of the word embedding models and the neural network, and
 (3)~train word embedding models on other data.
-%fixme: \fxnote[margin]{add (1)}
+\fxnote[margin]{add (1)}
 
+\fixme[margin]{When explaining numbers to the power of 10 write $9x10^8$ instead of $0.9*10^9$, also,
+in running text it is advised to use "900 million" instead.}
 The optimal learning parameters for the word embedding models were selected
 according to a comprehensive set of experiments and comparisons by
 Levy~\shortcite{TACL570}, and observations and suggestions by
@@ -300,7 +323,7 @@ sub-sampling value of $10^{-5}$.
 As additional data to train word embedding models we obtained and processed
 \emph{C4Corpus}, \emph{DECOW14}, and \emph{deTenTen}.
 
-\fxnote[inline]{}Results pending.
+\fxnote[inline]{Post EmpiriST experiment results / discussion and conclusion is still missing.}
 
 
 \section{Conclusion \& Outlook}
