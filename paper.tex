@@ -23,8 +23,35 @@
 \usepackage{xspace}
 \newcommand\wtv{\texttt{w2v}\xspace}
 
-\title{bot.zen @ EmpiriST 2015 - A minimally-deep learning PoS-tagger \\
-       (trained for German CMC and Web data)}
+\newcommand{\mytitle}{bot.zen @ EmpiriST 2015 - A minimally-deep learning PoS-tagger \\
+    (trained for German CMC and Web data)}
+\newcommand{\mypdftitle}{\mytitle}
+\newcommand{\mypdfsubject}{in Proceedings of the 10th Web as Corpus Workshop
+    (WAC-X) and the EmpiriST Shared Task}
+\newcommand{\mystitle}{bot.zen - A minimally-deep learning PoS-tagger}
+\newcommand{\mykeywords}{PoS tagger, word empbeddings, word2vec, neural
+    network, RNN, LSTM, EmpiriST 2015 shared task}
+\newcommand{\mypdfkeywords}{\mykeywords}
+
+%%%% hyper & options
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\usepackage[final=true, pdfstartview=FitH]{hyperref}
+\hypersetup{
+    pdftitle={\mypdftitle},
+    pdfauthor={egon w. stemle <egon.stemle@eurac.edu>},
+    pdfsubject={\mypdfsubject},
+    pdfkeywords={\mypdfkeywords},
+    setpagesize=true,
+    colorlinks=true,
+    linkcolor=darkred,
+    urlcolor=darkblue,
+    citecolor=darkgreen
+}
+
+\title{\mytitle}
 
 \author{Egon W.~Stemle \\
   EURAC research \\
