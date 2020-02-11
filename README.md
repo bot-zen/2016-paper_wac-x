@@ -13,4 +13,8 @@ embeddings and character-level representations of word beginnings and endings
 in a LSTM RNN architecture.  Labelled data (Tiger v2.2 and EmpiriST) and
 unlabelled data (German Wikipedia) were used for training.
 
+# Paper
+The paper is available here: https://www.aclweb.org/anthology/W16-2614.pdf
+
+# System
 The system is available under the APLv2 open-source license.
